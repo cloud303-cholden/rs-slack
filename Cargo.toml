@@ -1,7 +1,16 @@
 [package]
-name = "slack"
-version = "0.1.0"
+name = "slack-sdk"
+version = "0.0.1"
 edition = "2021"
+description = "Unofficial Slack SDK for Rust"
+authors = ["Conner Holden <80974257+cloud303-cholden@users.noreply.github.com>"]
+keywords = ["slack", "api", "sdk"]
+categories = ["web-programming", "api-bindings"]
+repository = "https://github.com/cloud303-cholden/rs-slack"
+readme = "README.md"
+
+[lib]
+name = "slack"
 
 [dependencies]
 reqwest = { version = "0.11.22", features = ["serde_json", "json"] }

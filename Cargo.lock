@@ -738,8 +738,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "slack"
-version = "0.1.0"
+name = "slack-sdk"
+version = "0.0.1"
 dependencies = [
  "reqwest",
  "serde",
