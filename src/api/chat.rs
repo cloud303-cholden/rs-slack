@@ -11,7 +11,7 @@ pub struct Chat<'a> {
 impl<'a> Chat<'a> {
     pub async fn post_message(
         &self,
-        input: PostMessageInput<'a>,
+        input: input::PostMessage<'a>,
     ) -> Result<reqwest::Response, reqwest::Error> {
         let body = json!({"text": input.text, "channel": input.channel, "thread_ts": input.thread_ts});
         let mut headers = HeaderMap::new();
@@ -35,9 +35,12 @@ impl<'a> FromClient<'a> for Chat<'a> {
     }
 }
 
-#[derive(Default)]
-pub struct PostMessageInput<'a> {
-    pub channel: &'a str,
-    pub text: &'a str,
-    pub thread_ts: Option<&'a str>,
+pub mod input {
+    #[derive(Default)]
+    pub struct PostMessage<'a> {
+        pub channel: &'a str,
+        pub text: &'a str,
+        pub thread_ts: Option<&'a str>,
+    }
+    pub type PostMessageInput<'a> = PostMessage<'a>;
 }
