@@ -1,32 +1,32 @@
 use std::sync::Arc;
 
-use crate::client::Client;
+use crate::client::ClientInner;
 
 use super::{Api, Request};
 
-pub struct Chat(Arc<Client>);
+pub struct Chat(Arc<ClientInner>);
 
 impl Chat {
     pub async fn post_message(
-        self,
+        &self,
         input: input::PostMessage<'_>,
     ) -> Result<output::PostMessage, reqwest::Error> {
-        let request = Request {
-            api: self,
-            input: Some(input),
-            endpoint: "https://slack.com/api/chat.postMessage".to_string(),
-        };
-        request.post().await
+        self
+            .client()
+            .post(Request {
+                input: Some(input),
+                endpoint: "https://slack.com/api/chat.postMessage".to_string(),
+            }).await
     }
 }
 
 impl Api for Chat {
-    fn client(&self) -> Arc<Client> {
+    fn client(&self) -> Arc<ClientInner> {
         self.0.clone()
     }
 
-    fn from_client(client: Client) -> Self {
-        Self(Arc::new(client))
+    fn from_client(client: Arc<ClientInner>) -> Self {
+        Self(client)
     }
 }
 
