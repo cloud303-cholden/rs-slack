@@ -16,8 +16,11 @@ where
     S: serde::Serialize,
 {
     pub(crate) input: Option<&'a S>,
-    pub(crate) endpoint: String,
+    pub(crate) endpoint: &'a str,
 }
+
+#[allow(type_alias_bounds)]
+pub type Result<D: serde::de::DeserializeOwned> = std::result::Result<D, reqwest::Error>;
 
 #[async_trait]
 pub trait Api {

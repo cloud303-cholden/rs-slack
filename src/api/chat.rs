@@ -7,16 +7,15 @@ use super::{Api, Request};
 pub struct Chat(Arc<ClientInner>);
 
 impl Chat {
-    pub async fn post_message<'a, T: AsRef<input::PostMessage<'a>>>(
-        &self,
-        input: T,
-    ) -> Result<output::PostMessage, reqwest::Error> {
-        self
-            .client()
-            .post(Request {
-                input: Some(input.as_ref()),
-                endpoint: "https://slack.com/api/chat.postMessage".to_string(),
-            }).await
+    pub async fn post_message<'a, T>(&self, input: T) -> super::Result<output::PostMessage>
+    where
+        T: AsRef<input::PostMessage<'a>>,
+    {
+        let request = Request {
+            input: Some(input.as_ref()),
+            endpoint: "https://slack.com/api/chat.postMessage",
+        };
+        self.client().post(request).await
     }
 }
 
