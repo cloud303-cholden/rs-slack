@@ -1,11 +1,9 @@
 pub mod chat;
 
-use std::sync::Arc;
-
 pub use chat::Chat;
 use async_trait::async_trait;
 
-use crate::client::ClientInner;
+use crate::client::ClientArc;
 
 pub mod input {
     pub use crate::api::chat::input::*;
@@ -24,6 +22,6 @@ pub type Result<D: serde::de::DeserializeOwned> = std::result::Result<D, reqwest
 
 #[async_trait]
 pub trait Api {
-    fn client(&self) -> Arc<ClientInner>;
-    fn from_client(client: Arc<ClientInner>) -> Self;
+    fn client(&self) -> ClientArc;
+    fn from_client(client: ClientArc) -> Self;
 }

@@ -1,10 +1,8 @@
-use std::sync::Arc;
-
-use crate::client::ClientInner;
+use crate::client::ClientArc;
 
 use super::{Api, Request};
 
-pub struct Chat(Arc<ClientInner>);
+pub struct Chat(ClientArc);
 
 impl Chat {
     pub async fn post_message<'a, T>(&self, input: T) -> super::Result<output::PostMessage>
@@ -20,11 +18,11 @@ impl Chat {
 }
 
 impl Api for Chat {
-    fn client(&self) -> Arc<ClientInner> {
+    fn client(&self) -> ClientArc {
         self.0.clone()
     }
 
-    fn from_client(client: Arc<ClientInner>) -> Self {
+    fn from_client(client: ClientArc) -> Self {
         Self(client)
     }
 }

@@ -5,8 +5,10 @@ use reqwest::header::{HeaderMap, AUTHORIZATION, CONTENT_TYPE};
 
 use crate::api::{Api, Request};
 
+pub type ClientArc = Arc<ClientInner>;
+
 pub struct Client {
-    inner: Arc<ClientInner>,
+    inner: ClientArc,
 }
 
 impl Deref for Client {
