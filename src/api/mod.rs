@@ -18,7 +18,7 @@ where
 }
 
 #[allow(type_alias_bounds)]
-pub type Result<D: serde::de::DeserializeOwned> = std::result::Result<D, reqwest::Error>;
+pub type Response<D: serde::de::DeserializeOwned> = std::result::Result<D, reqwest::Error>;
 
 #[async_trait]
 pub trait Api {

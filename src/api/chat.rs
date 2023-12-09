@@ -1,15 +1,16 @@
 use crate::client::ClientArc;
 
-use super::{Api, Request};
+use crate::api;
+use crate::api::Api;
 
 pub struct Chat(ClientArc);
 
 impl Chat {
-    pub async fn post_message<'a, T>(&self, input: T) -> super::Result<output::PostMessage>
+    pub async fn post_message<'a, T>(&self, input: T) -> api::Response<output::PostMessage>
     where
         T: AsRef<input::PostMessage<'a>>,
     {
-        let request = Request {
+        let request = api::Request {
             input: Some(input.as_ref()),
             endpoint: "https://slack.com/api/chat.postMessage",
         };
