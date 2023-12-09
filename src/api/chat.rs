@@ -1,44 +1,32 @@
-use reqwest::header::{HeaderMap, AUTHORIZATION, CONTENT_TYPE};
+use std::sync::Arc;
 
-use crate::client::{FromClient, Client};
+use crate::client::Client;
 
-use super::Api;
+use super::{Api, Request};
 
-pub struct Chat<'a> {
-    client: &'a reqwest::Client,
-    token: &'a str,
-}
+pub struct Chat(Arc<Client>);
 
-impl<'a> Chat<'a> {
+impl Chat {
     pub async fn post_message(
-        &self,
-        input: input::PostMessage<'a>,
+        self,
+        input: input::PostMessage<'_>,
     ) -> Result<output::PostMessage, reqwest::Error> {
-        let mut headers = HeaderMap::new();
-        headers.append(AUTHORIZATION, format!("Bearer {}", self.token).parse().unwrap());
-        headers.append(CONTENT_TYPE, "application/json; charset=utf-8".parse().unwrap());
-        let resp: output::PostMessage = self.client
-            .post("https://slack.com/api/chat.postMessage")
-            .json(&input)
-            .headers(headers)
-            .send().await?
-            .json().await?;
-        Ok(resp)
+        let request = Request {
+            api: self,
+            input: Some(input),
+            endpoint: "https://slack.com/api/chat.postMessage".to_string(),
+        };
+        request.post().await
     }
 }
 
-impl<'a> Api<'a> for Chat<'a> {
-    fn endpoint() -> &'a str {
-       "https://slack.com/api/chat.postMessage" 
+impl Api for Chat {
+    fn client(&self) -> Arc<Client> {
+        self.0.clone()
     }
-}
 
-impl<'a> FromClient<'a> for Chat<'a> {
-    fn from_client(client: &'a Client) -> Self {
-        Self {
-            client: &client.client,
-            token: client.token,
-        }
+    fn from_client(client: Client) -> Self {
+        Self(Arc::new(client))
     }
 }
 

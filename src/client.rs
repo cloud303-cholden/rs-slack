@@ -1,22 +1,19 @@
-pub struct Client<'a> {
+use crate::api::Api;
+
+pub struct Client {
     pub(crate) client: reqwest::Client,
-    pub(crate) token: &'a str,
+    pub(crate) token: String,
 }
 
-impl<'a> Client<'a> {
-    pub fn new(token: &'a str) -> Self {
-        let client = reqwest::Client::new();
+impl Client {
+    pub fn new<S: Into<String>>(token: S) -> Self {
         Self {
-            client,
-            token,
+            client: reqwest::Client::new(),
+            token: token.into(),
         }
     }
 
-    pub fn api<T: FromClient<'a>>(&'a self) -> T {
-        T::from_client(self)
+    pub fn api<A: Api>(self) -> A {
+        A::from_client(self)
     }
-}
-
-pub trait FromClient<'a> {
-    fn from_client(client: &'a Client) -> Self;
 }
