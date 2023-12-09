@@ -9,6 +9,10 @@ pub mod input {
     pub use crate::api::chat::input::*;
 }
 
+pub mod output {
+    pub use crate::api::chat::output::*;
+}
+
 pub(crate) struct Request<'a, S>
 where
     S: serde::Serialize,
