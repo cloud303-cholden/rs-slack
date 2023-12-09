@@ -52,7 +52,7 @@ impl ClientInner {
         headers
     }
 
-    pub(crate) async fn post<D, S>(self: Arc<Self>, request: Request<S>) -> Result<D, reqwest::Error>
+    pub(crate) async fn post<D, S>(self: Arc<Self>, request: Request<'_, S>) -> Result<D, reqwest::Error>
     where
         D: serde::de::DeserializeOwned,
         S: serde::Serialize,

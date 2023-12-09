@@ -11,11 +11,11 @@ pub mod input {
     pub use crate::api::chat::input::*;
 }
 
-pub(crate) struct Request<S>
+pub(crate) struct Request<'a, S>
 where
     S: serde::Serialize,
 {
-    pub(crate) input: Option<S>,
+    pub(crate) input: Option<&'a S>,
     pub(crate) endpoint: String,
 }
 
