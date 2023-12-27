@@ -69,4 +69,19 @@ impl ClientInner {
             .json().await?;
         Ok(resp)
     }
+
+    pub(crate) async fn get<D, S>(self: Arc<Self>, request: Request<'_, S>) -> Result<D, reqwest::Error>
+    where
+        D: serde::de::DeserializeOwned,
+        S: serde::Serialize,
+    {
+        let headers = self.headers();
+        let resp = self
+            .client
+            .get(request.endpoint)
+            .headers(headers)
+            .send().await?
+            .json().await?;
+        Ok(resp)
+    }
 }

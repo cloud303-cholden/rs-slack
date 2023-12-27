@@ -5,19 +5,6 @@ use crate::api::Api;
 
 pub struct Chat(ClientArc);
 
-impl Chat {
-    pub async fn post_message<'a, T>(&self, input: T) -> api::Response<output::PostMessage>
-    where
-        T: AsRef<input::PostMessage<'a>>,
-    {
-        let request = api::Request {
-            input: Some(input.as_ref()),
-            endpoint: "https://slack.com/api/chat.postMessage",
-        };
-        self.client().post(request).await
-    }
-}
-
 impl Api for Chat {
     fn client(&self) -> ClientArc {
         self.0.clone()
@@ -28,17 +15,30 @@ impl Api for Chat {
     }
 }
 
+impl Chat {
+    pub async fn post_message<'a, T>(&self, input: T) -> api::Response<output::ChatPostMessage>
+    where
+        T: AsRef<input::ChatPostMessage<'a>>,
+    {
+        let request = api::Request {
+            input: Some(input.as_ref()),
+            endpoint: "https://slack.com/api/chat.postMessage",
+        };
+        self.client().post(request).await
+    }
+}
+
 pub mod input {
     #[derive(Default, serde::Serialize)]
-    pub struct PostMessage<'a> {
+    pub struct ChatPostMessage<'a> {
         pub channel: &'a str,
         pub text: &'a str,
         pub thread_ts: Option<&'a str>,
     }
-    pub type PostMessageInput<'a> = PostMessage<'a>;
+    pub type PostMessageInput<'a> = ChatPostMessage<'a>;
 
-    impl<'a> AsRef<PostMessage<'a>> for PostMessage<'a> {
-        fn as_ref(&self) -> &PostMessage<'a> {
+    impl<'a> AsRef<ChatPostMessage<'a>> for ChatPostMessage<'a> {
+        fn as_ref(&self) -> &ChatPostMessage<'a> {
             self
         }
     }
@@ -48,7 +48,7 @@ pub mod output {
     use crate::api::chat::types::*;
 
     #[derive(Debug, serde::Deserialize)]
-    pub struct PostMessage {
+    pub struct ChatPostMessage {
         pub ok: bool,
         pub channel: String,
         pub ts: String,
@@ -56,7 +56,7 @@ pub mod output {
         pub warning: Option<String>,
         pub response_metadata: Option<ResponseMetadata>,
     }
-    pub type PostMessageOutput = PostMessage;
+    pub type PostMessageOutput = ChatPostMessage;
 }
 
 pub mod types {
